@@ -1,0 +1,72 @@
+<header>
+  <a href="#" class="logo">
+    <img src="../assets/logo.png">
+    CoachFit
+  </a>
+  <nav>
+    <a routerLink="/principal" routerLinkActive="active">Inicio</a>
+    <a routerLink="/login">Grupos</a>
+    <a routerLink="/login">Seguimiento</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Transforma tu cuerpo, cambia tu vida</h1>
+      <p>CoachFit te ofrece entrenamiento personalizado, seguimiento de progreso y apoyo de grupo para alcanzar tus metas fitness.</p>
+      <div>
+        <a routerLink="/login" class="button button-primary">Comienza ahora</a>
+        <a href="#features" class="button button-secondary">Saber más</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <h2>¿Por qué elegir CoachFit?</h2>
+    <p>Nuestra plataforma combina tecnología avanzada con experiencia en fitness para ofrecerte una experiencia de entrenamiento única.</p>
+    <div class="features-grid">
+      <div class="feature">
+        <img src="../assets/logo2.png">
+        <h3>Entrenamiento Personalizado</h3>
+        <p>Planes de ejercicio adaptados a tus objetivos y nivel de condición física.</p>
+      </div>
+      <div class="feature">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <h3>Comunidad Activa</h3>
+        <p>Únete a grupos motivados y comparte tu progreso con otros miembros.</p>
+      </div>
+      <div class="feature">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="20" x2="12" y2="10"></line>
+          <line x1="18" y1="20" x2="18" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="16"></line>
+        </svg>
+        <h3>Seguimiento Detallado</h3>
+        <p>Monitorea tu progreso con métricas avanzadas y visualizaciones claras.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <h2>Únete a CoachFit hoy</h2>
+    <p>Comienza tu viaje hacia un cuerpo más fuerte y saludable. Regístrate ahora y obtén acceso a miles de coach capacitados.</p>
+    <form (ngSubmit)="onSubmit()">
+      <input type="email" [(ngModel)]="email" name="email" placeholder="Ingresa tu correo electrónico" required>
+      <button type="submit" class="buttonx">Comenzar ahora</button>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <p>© 2024 CoachFit. Todos los derechos reservados.</p>
+  <nav>
+    <a href="#">Términos de Servicio</a>
+    <a href="#">Privacidad</a>
+  </nav>
+</footer>

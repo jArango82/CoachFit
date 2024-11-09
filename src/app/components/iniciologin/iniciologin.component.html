@@ -1,0 +1,103 @@
+<header>
+  <a href="/" class="logo">
+    <img class="imagen" src="assets/logo.png">
+    CoachFit
+  </a>
+  <nav>
+    <a href="/" class="active">Inicio</a>
+    <a href="/grupos">Grupos</a>
+    <a href="/seguimiento">Seguimiento</a>
+  </nav>
+</header>
+
+<main>
+  <section class="dashboard">
+    <div class="stats-section">
+      <h2 class="tituloTop">Top 5 Integrantes</h2>
+      <div class="ranking-list">
+        <div *ngFor="let member of topMembers; let i = index" class="ranking-item">
+          <div [class]="'rank-number ' + getRankClass(i)">{{i + 1}}</div>
+          <div class="member-info">
+            <img [src]="member.image" [alt]="member.name" class="member-avatar">
+            <div class="member-details">
+              <h3 class="member-name">{{member.name}}</h3>
+              <p class="member-group">{{member.group}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="user-profile">
+    <h2>Tu Perfil</h2>
+    <div id="user-info">
+      <img src="../assets/profile-icon-design-free-vector.jpg" alt="Tu Avatar" width="80" height="80">
+      <div class="user-details">
+        <h3 id="user-name">{{userName}}</h3>
+        <p class="informacion">Nivel: Intermedio | Grupo actual: Fuerza Total | Puntos: 750</p>
+        <div class="user-data-grid">
+          <div class="user-data-column">
+            <h4>Datos Físicos</h4>
+            <ul>
+              <li>
+                Altura: <input type="number" [(ngModel)]="userProfile.datosPhysicos.altura" /> cm
+              </li>
+              <li>
+                Peso: <input type="number" [(ngModel)]="userProfile.datosPhysicos.peso" /> kg
+              </li>
+              <li>
+                IMC: <input type="text" [(ngModel)]="userProfile.datosPhysicos.imc" disabled /> 
+              </li>
+              <li>
+                % grasa corporal: <input type="number" [(ngModel)]="userProfile.datosPhysicos.grasaCorporal" /> %
+              </li>
+            </ul>
+          </div>
+          <div class="user-data-column">
+            <h4>Medidas</h4>
+            <ul>
+              <li>
+                Pecho: <input type="number" [(ngModel)]="userProfile.medidas.pecho" /> cm
+              </li>
+              <li>
+                Cintura: <input type="number" [(ngModel)]="userProfile.medidas.cintura" /> cm
+              </li>
+              <li>
+                Cadera: <input type="number" [(ngModel)]="userProfile.medidas.cadera" /> cm
+              </li>
+              <li>
+                Bíceps: <input type="number" [(ngModel)]="userProfile.medidas.biceps" /> cm
+              </li>
+              <li>
+                Muslos: <input type="number" [(ngModel)]="userProfile.medidas.muslos" /> cm
+              </li>
+            </ul>
+          </div>
+          <div class="user-data-column">
+            <h4>Objetivos</h4>
+            <ul id="objetivos-lista">
+              <li *ngFor="let objetivo of userProfile.objetivos">
+                <input type="text"/>
+              </li>
+            </ul>
+            <button type="button" (click)="addObjetivo()" class="add-objetivo-btn">
+              + Añadir Objetivo
+            </button>
+          </div>
+        </div>
+        <button type="button" (click)="saveChanges()" class="edit-profile-btn">
+          guardar cambios
+        </button>                       
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© 2024 CoachFit. Todos los derechos reservados.</p>
+  <nav>
+    <a href="#">Términos de Servicio</a>
+    <a href="#">Privacidad</a>
+  </nav>
+</footer>
