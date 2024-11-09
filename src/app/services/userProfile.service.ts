@@ -21,7 +21,7 @@ export interface UserProfile {
 }
 
 @Injectable({
-  providedIn: 'root'  // Cambiado para que sea accesible globalmente
+  providedIn: 'root'
 })
 export class UserProfileService {
   private apiUrl = 'http://localhost:5000/api';

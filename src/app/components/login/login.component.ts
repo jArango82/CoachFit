@@ -27,13 +27,10 @@ export class LoginComponent {
   ) {}
 
   async onSubmit() {
-    // Validación básica
     if (!this.loginData.email || !this.loginData.password) {
       this.errorMessage = 'Por favor, complete todos los campos';
       return;
     }
-
-    // Validación de formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.loginData.email)) {
       this.errorMessage = 'Por favor, ingrese un email válido';

@@ -36,7 +36,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('usuarios', userSchema);
 
-// Middleware para verificar token
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
@@ -53,12 +52,10 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-// Ruta de login
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Buscar usuario por email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(401).json({ message: 'Credenciales inválidas' });
@@ -70,7 +67,6 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
-    // Crear payload para el token
     const payload = {
       user: {
         id: user._id,
@@ -80,13 +76,11 @@ app.post('/api/login', async (req, res) => {
         rol: user.rol
       },
       iat: Date.now(),
-      exp: Date.now() + (24 * 60 * 60 * 1000) // Token válido por 24 horas
+      exp: Date.now() + (24 * 60 * 60 * 1000)
     };
 
-    // Generar token con jwt-simple
     const token = jwt.encode(payload, JWT_SECRET);
 
-    // Enviar respuesta
     res.json({
       token,
       user: payload.user
@@ -100,21 +94,16 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Ruta de registro (mantenemos la existente)
 app.post('/api/registro', async (req, res) => {
   const { nombre, apellido, email, password, rol } = req.body;
 
   try {
-    // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'El email ya está registrado' });
     }
 
-    // Hash de la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Crear nuevo usuario
     const newUser = new User({
       nombre,
       apellido,
@@ -124,8 +113,6 @@ app.post('/api/registro', async (req, res) => {
     });
 
     await newUser.save();
-
-    // Crear payload para el token
     const payload = {
       user: {
         id: newUser._id,
@@ -138,7 +125,6 @@ app.post('/api/registro', async (req, res) => {
       exp: Date.now() + (24 * 60 * 60 * 1000)
     };
 
-    // Generar token
     const token = jwt.encode(payload, JWT_SECRET);
 
     res.status(201).json({
@@ -155,7 +141,6 @@ app.post('/api/registro', async (req, res) => {
   }
 });
 
-// Ruta protegida de ejemplo
 app.get('/api/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -174,10 +159,9 @@ app.get('/api/userprofile', authenticateToken, async (req, res) => {
       const userProfile = await UserProfile.findOne({ userId: req.user.id });
       
       if (!userProfile) {
-        // Si no existe, crear un perfil por defecto
         const newProfile = new UserProfile({
           userId: req.user.id,
-          objetivos: [] // Array vacío por defecto
+          objetivos: []
         });
         await newProfile.save();
         return res.json(newProfile);
@@ -190,7 +174,6 @@ app.get('/api/userprofile', authenticateToken, async (req, res) => {
     }
   });
   
-  // Nueva ruta para actualizar el perfil del usuario
   app.post('/api/userprofile/update', authenticateToken, async (req, res) => {
     try {
       const { datosPhysicos, medidas, objetivos } = req.body;
