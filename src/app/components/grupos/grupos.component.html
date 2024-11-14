@@ -1,0 +1,107 @@
+<header>
+    <a href="#" class="logo">
+      <i data-lucide="dumbbell"></i>
+      <img class="imagen" src="../assets/logo.png" alt="">
+      <span>CoachFit</span>
+    </a>
+    <nav>
+      <a href="../Screens/iniciologin.html">Inicio</a>
+      <a href="../Screens/grupos.html" class="active">Grupos</a>
+      <a href="../Screens/seguimiento.html">Seguimiento</a>
+    </nav>
+  </header>
+  
+  <main>
+    <h1>Grupos de CoachFit</h1>
+    
+    <button id="createGroupBtn" class="create-group-btn" (click)="toggleModal()" *ngIf="true">
+      <svg xmlns="http://www.w3.org/2000/svg" class="arr-2" viewBox="0 0 24 24">
+        <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+      </svg>
+      <span class="text">Crear grupo</span>
+      <span class="circle"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="arr-1" viewBox="0 0 24 24">
+        <path d="M16.1716 10.9999L10.8076 5.63589L12.2218 4.22168L20 11.9999L12.2218 19.778L10.8076 18.3638L16.1716 12.9999H4V10.9999H16.1716Z"></path>
+      </svg>
+    </button>
+  
+    <div id="poda">
+      <div class="glow"></div>
+      <div class="darkBorderBg"></div>
+      <div class="darkBorderBg"></div>
+      <div class="darkBorderBg"></div>
+      <div class="white"></div>
+      <div class="border"></div>
+      <div id="main">
+        <input placeholder="Search..." type="text" name="text" class="input" [(ngModel)]="searchText" />
+        <div id="input-mask"></div>
+        <div id="pink-mask"></div>
+        <div id="search-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" viewBox="0 0 24 24" stroke-width="2" stroke-linejoin="round"
+            stroke-linecap="round" height="24" fill="none" class="feather feather-search">
+            <circle stroke="url(#search)" r="8" cy="11" cx="11"></circle>
+            <line stroke="url(#searchl)" y2="16.65" y1="22" x2="16.65" x1="22"></line>
+            <defs>
+              <linearGradient gradientTransform="rotate(50)" id="search">
+                <stop stop-color="#f8e7f8" offset="0%"></stop>
+                <stop stop-color="#b6a9b7" offset="50%"></stop>
+              </linearGradient>
+              <linearGradient id="searchl">
+                <stop stop-color="#b6a9b7" offset="0%"></stop>
+                <stop stop-color="#837484" offset="50%"></stop>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+    </div>
+  
+    <div id="groupList" class="group-list">
+      <div class="group-card" *ngFor="let group of groups">
+        <h3>{{ group.name }}</h3>
+        <p class="creator-name">Created by {{ group.creator }}</p>
+        <p>{{ group.description }}</p>
+        <button class="toggle-details-btn" (click)="toggleDetails(group)">
+          {{ group.showDetails ? 'Hide Details' : 'Show Details' }}
+        </button>
+        <div class="group-details" [class.active]="group.showDetails">
+          <!-- Group details content -->
+        </div>
+      </div>
+    </div>
+  
+    <!-- Modal -->
+    <div class="modal" [class.active]="showModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Crear Nuevo Grupo</h2>
+          <button class="close-modal" (click)="toggleModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="createGroupForm" (submit)="createGroup($event)">
+            <div class="form-group">
+              <label for="groupName">Nombre del Grupo:</label>
+              <input type="text" id="groupName" name="groupName" required>
+            </div>
+            <div class="form-group">
+              <label for="groupDescription">Descripción:</label>
+              <textarea id="groupDescription" name="groupDescription" rows="3" 
+                        placeholder="Procura escribir tu nombre"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="groupCapacity">Capacidad máxima:</label>
+              <input type="number" id="groupCapacity" name="groupCapacity" min="1" required>
+            </div>
+            <div class="form-group">
+              <label for="groupPrice">Precio:</label>
+              <input type="number" id="groupPrice" name="groupPrice" min="0" max="500000">
+            </div>
+            <div class="button-group">
+              <button type="submit" class="submit-btn">Crear Grupo</button>
+              <button type="button" class="cancel-btn" (click)="toggleModal()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>

@@ -30,6 +30,10 @@ header {
   height: 1.5rem;
   margin-right: 0.5rem;
 }
+.logo img {
+  width: 50px; /* Ajusta el ancho a 50px */
+  height: auto; /* Mantiene la proporción del alto */
+}
 
 nav {
   display: flex;
@@ -79,17 +83,24 @@ main {
   margin-left: 60px;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../assets/risen-wang-20jX9b35r_M-unsplash.jpg');
-  background-size: cover;
-  z-index: -1;
+/* Reseteo de margen y relleno */
+body, header, .hero {
+  margin: 0;
+  padding: 0;
 }
+.hero-content img{
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -100;
+  opacity: 0.90;
+  height: 1100px;
+  
+}  
+
+
+
+
 
 .button {
   display: inline-block;
@@ -164,18 +175,18 @@ main {
 
 .cta {
   text-align: center;
-  background-color: black;
+  
   padding-left: 10px;
 }
 
 .cta h2 {
   font-size: 2.25rem;
   margin-bottom: 1rem;
-  color: white;
+  color: red;
 }
 
 .cta p {
-  color: #ffffff;
+  color: white;
   max-width: 600px;
   margin: 0 auto 2rem;
 }

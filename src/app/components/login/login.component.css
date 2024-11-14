@@ -4,6 +4,11 @@
   background-color: black;
 }
 
+.img-fluid {
+  width: 40%; /* Ajusta el ancho al 50% de su contenedor */
+  height: auto; /* Ajusta la altura automáticamente para mantener la proporción */
+}
+
 .form-container {
   flex: 1;
   display: flex;
@@ -159,7 +164,7 @@ button {
 
 .background-image{
   flex: 1;
-  background-image: url('../assets/fitness-equipment.jpg');
+  /*background-image: url('assets/logo.png');*/
   background-size: cover;
   background-position: center;
 }
@@ -215,3 +220,6 @@ button {
   background-position: center;
   display: none;
 }
+
+
+

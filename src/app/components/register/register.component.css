@@ -205,9 +205,13 @@ button {
 
 .background-image{
   flex: 1;
-  background-image: url('../assets/fitness-equipment.jpg');
+  /*background-image: url('../assets/fitness-equipment.jpg');*/
   background-size: cover;
   background-position: center;
+}
+.img-fluid {
+  width: 50%; /* Ajusta el ancho al 50% de su contenedor */
+  height: auto; /* Ajusta la altura automáticamente para mantener la proporción */
 }
 
 .social-button {
