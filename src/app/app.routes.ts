@@ -14,5 +14,9 @@ export const routes: Routes = [
     path: 'dashboard', 
     loadComponent: () => import('./components/iniciologin/iniciologin.component').then(m => m.HomeComponent)
   },
+  {
+    path: 'grupos',
+    loadComponent: () => import('./components/grupos/grupos.component').then(m => m.GroupsComponent)
+  },
   { path: '**', redirectTo: '/login' }
 ];
