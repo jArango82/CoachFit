@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { SocialButtonsComponent } from '../../shared/components/social-buttons/social-buttons.component';
 import { AuthService } from '../../shared/services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, SocialButtonsComponent],
+  imports: [CommonModule, FormsModule, RouterLink, SocialButtonsComponent, HttpClientModule],
+  providers: [AuthService],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -21,42 +23,27 @@ export class LoginComponent {
   errorMessage = '';
   isLoading = false;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router){}
 
   async onSubmit() {
-    if (!this.loginData.email || !this.loginData.password) {
-      this.errorMessage = 'Por favor, complete todos los campos';
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(this.loginData.email)) {
-      this.errorMessage = 'Por favor, ingrese un email válido';
-      return;
-    }
-
-    this.isLoading = true;
     this.errorMessage = '';
-
+    this.isLoading = true;
+  
     try {
-      const success = await this.authService.login(
-        this.loginData.email,
-        this.loginData.password
-      );
-
+      const success = await this.authService.login(this.loginData.email, this.loginData.password);
       if (success) {
+        // Redirigir a la página principal o dashboard
         this.router.navigate(['/dashboard']);
       } else {
-        this.errorMessage = 'Credenciales inválidas';
+        this.errorMessage = 'Correo o contraseña incorrectos';
       }
     } catch (error: any) {
-      this.errorMessage = error.error?.message || 'Error al iniciar sesión. Por favor, intente nuevamente.';
+      this.errorMessage = error || 'Hubo un problema al iniciar sesión. Intenta nuevamente.';
     } finally {
       this.isLoading = false;
     }
   }
+  
 
   togglePassword() {
     this.showPassword = !this.showPassword;

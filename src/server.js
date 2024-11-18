@@ -36,64 +36,6 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('usuarios', userSchema);
 
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    return res.status(401).json({ message: 'No token provided' });
-  }
-
-  const token = authHeader.split(' ')[1];
-  try {
-    const decoded = jwt.decode(token, JWT_SECRET);
-    req.user = decoded.user;
-    next();
-  } catch (error) {
-    return res.status(403).json({ message: 'Invalid token' });
-  }
-};
-
-app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(401).json({ message: 'Credenciales inválidas' });
-    }
-
-    // Verificar contraseña
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ message: 'Credenciales inválidas' });
-    }
-
-    const payload = {
-      user: {
-        id: user._id,
-        nombre: user.nombre,
-        apellido: user.apellido,
-        email: user.email,
-        rol: user.rol
-      },
-      iat: Date.now(),
-      exp: Date.now() + (24 * 60 * 60 * 1000)
-    };
-
-    const token = jwt.encode(payload, JWT_SECRET);
-
-    res.json({
-      token,
-      user: payload.user
-    });
-  } catch (error) {
-    console.error('Error en el login:', error);
-    res.status(500).json({ 
-      message: 'Error al iniciar sesión', 
-      error: error.message 
-    });
-  }
-});
-
 app.post('/api/registro', async (req, res) => {
   const { nombre, apellido, email, password, rol } = req.body;
 
@@ -141,69 +83,46 @@ app.post('/api/registro', async (req, res) => {
   }
 });
 
-app.get('/api/profile', authenticateToken, async (req, res) => {
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(401).json({ message: 'Usuario no encontrado' });
     }
-    res.json(user);
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Contraseña incorrecta' });
+    }
+
+    const payload = {
+      user: {
+        id: user._id,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
+        rol: user.rol
+      },
+      iat: Date.now(),
+      exp: Date.now() + (24 * 60 * 60 * 1000) // 24 horas
+    };
+
+    const token = jwt.encode(payload, JWT_SECRET);
+
+    res.status(200).json({
+      message: 'Inicio de sesión exitoso',
+      token,
+      user: payload.user
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener perfil' });
+    console.error('Error al iniciar sesión:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
 });
 
 
-app.get('/api/userprofile', authenticateToken, async (req, res) => {
-    try {
-      const userProfile = await UserProfile.findOne({ userId: req.user.id });
-      
-      if (!userProfile) {
-        const newProfile = new UserProfile({
-          userId: req.user.id,
-          objetivos: []
-        });
-        await newProfile.save();
-        return res.json(newProfile);
-      }
-      
-      res.json(userProfile);
-    } catch (error) {
-      console.error('Error al obtener perfil:', error);
-      res.status(500).json({ message: 'Error al obtener el perfil de usuario' });
-    }
-  });
-  
-  app.post('/api/userprofile/update', authenticateToken, async (req, res) => {
-    try {
-      const { datosPhysicos, medidas, objetivos } = req.body;
-  
-      const userProfile = await UserProfile.findOneAndUpdate(
-        { userId: req.user.id },
-        {
-          $set: {
-            datosPhysicos,
-            medidas,
-            objetivos
-          }
-        },
-        { new: true, upsert: true }
-      );
-  
-      res.json({
-        message: 'Perfil actualizado correctamente',
-        profile: userProfile
-      });
-    } catch (error) {
-      console.error('Error al actualizar perfil:', error);
-      res.status(500).json({ 
-        message: 'Error al actualizar el perfil de usuario',
-        error: error.message 
-      });
-    }
-  });
-
-  
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
