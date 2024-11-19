@@ -70,7 +70,7 @@ export class AuthService {
         tap(response => {
           if (response?.token) {
             localStorage.setItem(this.tokenKey, response.token);
-            this.userSubject.next(response.user);
+            localStorage.setItem('usuario', JSON.stringify(response.user));
           }
         }),
         catchError(error => {
@@ -83,6 +83,11 @@ export class AuthService {
       .catch(() => false);
   }
   
+  getUserData(){
+    const usuario = localStorage.getItem('usuario');
+    return usuario ? JSON.parse(usuario) : null;
+  }
+
   logout() {
     localStorage.removeItem(this.tokenKey);
     this.userSubject.next(null);

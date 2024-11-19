@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 interface Member {
   name: string;
@@ -30,7 +31,7 @@ interface UserProfile {
   templateUrl: './iniciologin.component.html',
   styleUrls: ['./iniciologin.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, HttpClientModule]
 })
 export class HomeComponent implements OnInit {
   allMembers: Member[] = [
@@ -43,6 +44,8 @@ export class HomeComponent implements OnInit {
 
   topMembers: Member[] = [];
   userName: string = 'Usuario no encontrado';
+  userId: string = '';
+  isLoading: boolean = true;
   userProfile: UserProfile = {
     datosPhysicos: {
       altura: 0,
@@ -59,6 +62,9 @@ export class HomeComponent implements OnInit {
     },
     objetivos: ['Aumentar masa muscular', 'Reducir % grasa al 15%']
   };
+  isSaving: boolean = false; // Indicador de guardado
+
+    constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.getRandomMembers();
@@ -71,8 +77,8 @@ export class HomeComponent implements OnInit {
       .slice(0, 5);
   }
 
-  loadUserData() {
-    const usuario = localStorage.getItem('usuario');
+  loadUserData(): void {
+    const usuario = localStorage.getItem('usuario'); // Recupera los datos del usuario desde localStorage
     if (usuario) {
       const userData = JSON.parse(usuario);
       this.userName = `${userData.nombre} ${userData.apellido}`;
@@ -87,28 +93,22 @@ export class HomeComponent implements OnInit {
     this.userProfile.objetivos.push('Nuevo objetivo');
   }
 
-  async saveChanges() {
-    const token = localStorage.getItem('token');
-    
-    try {
-      const response = await fetch('http://127.0.0.1:5000/api/userprofile/update', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': token || ''
-        },
-        body: JSON.stringify(this.userProfile)
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('Perfil actualizado correctamente');
-      } else {
-        alert('Error al actualizar el perfil: ' + result.message);
-      }
-    } catch (error) {
-      console.error('Error de red:', error);
-      alert('Error al actualizar el perfil');
-    }
-  }
+  saveUserData(): void {
+    this.isLoading = true; // Cambiar a true cuando se guarda para mostrar un estado de carga
+    this.http.put(`http://localhost:5000/api/datos-usuario/${this.userId}`, {
+      datosPhysicos: this.userProfile.datosPhysicos,
+      medidas: this.userProfile.medidas,
+    }).subscribe({
+      next: (response: any) => {
+        console.log('Datos guardados:', response.data);
+        alert('Datos actualizados correctamente');
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error al guardar los datos del usuario:', error);
+        alert('Hubo un problema al guardar los datos. Intenta nuevamente.');
+        this.isLoading = false;
+      },
+    });
+  }  
 }
