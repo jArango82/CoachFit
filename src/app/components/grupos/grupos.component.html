@@ -59,13 +59,57 @@
     <div id="groupList" class="group-list">
       <div class="group-card" *ngFor="let group of groups">
         <h3>{{ group.name }}</h3>
-        <p class="creator-name">Created by {{ group.creator }}</p>
         <p>{{ group.description }}</p>
         <button class="toggle-details-btn" (click)="toggleDetails(group)">
-          {{ group.showDetails ? 'Hide Details' : 'Show Details' }}
+          {{ group.showDetails ? 'Ocultar Detalles' : 'Mostrar Detalles' }}
         </button>
         <div class="group-details" [class.active]="group.showDetails">
-          <!-- Group details content -->
+          <div class="messageBox">
+            <div class="fileUploadWrapper">
+              <label for="file">
+                <svg viewBox="0 0 337 337" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle
+                    cx="168.5"
+                    cy="168.5"
+                    r="158.5"
+                    fill="none"
+                    stroke="#6c6c6c"
+                    stroke-width="20"
+                  ></circle>
+                  <path
+                    d="M167.759 79V259"
+                    stroke="#6c6c6c"
+                    stroke-width="25"
+                    stroke-linecap="round"
+                  ></path>
+                  <path
+                    d="M79 167.138H259"
+                    stroke="#6c6c6c"
+                    stroke-width="25"
+                    stroke-linecap="round"
+                  ></path>
+                </svg>
+                <span class="tooltip">Añadir imagen</span>
+              </label>
+              <input name="file" id="file" type="file" />
+            </div>
+            <input id="messageInput" type="text" placeholder="Mensaje..." required="" />
+            <button id="sendButton">
+              <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                  fill="none"
+                ></path>
+                <path
+                  d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                  stroke="#6c6c6c"
+                  stroke-width="33.67"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -75,30 +119,54 @@
       <div class="modal-content">
         <div class="modal-header">
           <h2>Crear Nuevo Grupo</h2>
-          <button class="close-modal" (click)="toggleModal()">&times;</button>
+          <button (click)="toggleModal()">×</button>
         </div>
+    
         <div class="modal-body">
-          <form id="createGroupForm" (submit)="createGroup($event)">
+          <form (submit)="createGroup($event)">
             <div class="form-group">
               <label for="groupName">Nombre del Grupo:</label>
-              <input type="text" id="groupName" name="groupName" required>
+              <input 
+                type="text" 
+                id="groupName" 
+                name="name" 
+                [(ngModel)]="newGroup.name" 
+                required>
             </div>
+    
             <div class="form-group">
-              <label for="groupDescription">Descripción:</label>
-              <textarea id="groupDescription" name="groupDescription" rows="3" 
-                        placeholder="Procura escribir tu nombre"></textarea>
+              <label for="description">Descripción:</label>
+              <textarea 
+                id="description" 
+                name="description" 
+                [(ngModel)]="newGroup.description" 
+                required
+                placeholder="Procura poner tu nombre aqui"></textarea>
             </div>
+    
             <div class="form-group">
-              <label for="groupCapacity">Capacidad máxima:</label>
-              <input type="number" id="groupCapacity" name="groupCapacity" min="1" required>
+              <label for="capacity">Capacidad máxima:</label>
+              <input 
+                type="number" 
+                id="capacity" 
+                name="capacity" 
+                [(ngModel)]="newGroup.capacity" 
+                required>
             </div>
+    
             <div class="form-group">
-              <label for="groupPrice">Precio:</label>
-              <input type="number" id="groupPrice" name="groupPrice" min="0" max="500000">
+              <label for="price">Precio:</label>
+              <input 
+                type="number" 
+                id="price" 
+                name="price" 
+                [(ngModel)]="newGroup.price" 
+                required>
             </div>
+    
             <div class="button-group">
-              <button type="submit" class="submit-btn">Crear Grupo</button>
-              <button type="button" class="cancel-btn" (click)="toggleModal()">Cancelar</button>
+              <button type="submit">Crear Grupo</button>
+              <button type="button" (click)="toggleModal()">Cancelar</button>
             </div>
           </form>
         </div>

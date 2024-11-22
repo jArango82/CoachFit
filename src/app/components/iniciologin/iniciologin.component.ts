@@ -78,7 +78,7 @@ export class HomeComponent implements OnInit {
   }
 
   loadUserData(): void {
-    const usuario = localStorage.getItem('usuario'); // Recupera los datos del usuario desde localStorage
+    const usuario = localStorage.getItem('usuario');
     if (usuario) {
       const userData = JSON.parse(usuario);
       this.userName = `${userData.nombre} ${userData.apellido}`;
@@ -94,8 +94,15 @@ export class HomeComponent implements OnInit {
   }
 
   saveUserData(): void {
-    this.isLoading = true; // Cambiar a true cuando se guarda para mostrar un estado de carga
-    this.http.put(`http://localhost:5000/api/datos-usuario/${this.userId}`, {
+    const userId = localStorage.getItem('userId'); // Obtén el ID del usuario desde el localStorage o desde tu sistema de autenticación
+  
+    if (!userId) {
+      alert('Usuario no autenticado');
+      return;
+    }
+
+    this.isLoading = true;
+    this.http.put(`http://localhost:5000/api/datos-usuario/${userId}`, {
       datosPhysicos: this.userProfile.datosPhysicos,
       medidas: this.userProfile.medidas,
     }).subscribe({
@@ -110,5 +117,6 @@ export class HomeComponent implements OnInit {
         this.isLoading = false;
       },
     });
-  }  
+  }
+  
 }

@@ -106,7 +106,7 @@ app.post('/api/login', async (req, res) => {
         rol: user.rol
       },
       iat: Date.now(),
-      exp: Date.now() + (24 * 60 * 60 * 1000) // 24 horas
+      exp: Date.now() + (24 * 60 * 60 * 1000) 
     };
 
     const token = jwt.encode(payload, JWT_SECRET);
@@ -119,6 +119,92 @@ app.post('/api/login', async (req, res) => {
   } catch (error) {
     console.error('Error al iniciar sesión:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
+
+const groupSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  description: { type: String, required: true },
+  capacity: { type: Number, required: true },
+  price: { type: Number, required: true },
+  creator: { type: mongoose.Schema.Types.ObjectId, ref: 'usuarios', required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Group = mongoose.model('grupos', groupSchema);
+
+app.post('/api/groups/create', async (req, res) => {
+  console.log('Datos recibidos en el servidor:', req.body);
+  
+  const { name, description, capacity, price, creatorId } = req.body;
+  if (!name || !description || !capacity || !price || !creatorId) {
+    console.log('Faltan campos requeridos');
+    return res.status(400).json({
+      message: 'Todos los campos son requeridos',
+      receivedData: req.body
+    });
+  }
+
+  try {
+    const creator = await User.findById(creatorId);
+    if (!creator) {
+      console.log('Creador no encontrado:', creatorId);
+      return res.status(404).json({ message: 'Creador no encontrado' });
+    }
+
+    const newGroup = new Group({
+      name,
+      description,
+      capacity,
+      price,
+      creator: creatorId
+    });
+
+    console.log('Grupo a guardar:', newGroup);
+    const savedGroup = await newGroup.save();
+    console.log('Grupo guardado exitosamente:', savedGroup);
+
+    res.status(201).json({
+      message: 'Grupo creado exitosamente',
+      group: savedGroup
+    });
+  } catch (error) {
+    console.error('Error al guardar el grupo:', error);
+    res.status(500).json({
+      message: 'Error al crear el grupo',
+      error: error.message,
+      stack: error.stack
+    });
+  }
+});
+
+app.get('/api/groups', async (req, res) => {
+  try {
+    const groups = await Group.find()
+      .populate('creator', 'nombre apellido email')
+      .sort({ createdAt: -1 });
+
+    const formattedGroups = groups.map(group => ({
+      id: group._id,
+      name: group.name,
+      description: group.description,
+      capacity: group.capacity,
+      price: group.price,
+      creator: {
+        id: group.creator._id,
+        name: `${group.creator.nombre} ${group.creator.apellido}`,
+        email: group.creator.email
+      },
+      createdAt: group.createdAt
+    }));
+
+    res.status(200).json(formattedGroups);
+  } catch (error) {
+    console.error('Error al obtener grupos:', error);
+    res.status(500).json({
+      message: 'Error al obtener los grupos',
+      error: error.message
+    });
   }
 });
 

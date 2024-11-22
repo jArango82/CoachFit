@@ -146,6 +146,7 @@ body, header, .hero {
   text-align: center;
   opacity: 0.9;
   color: white;
+  margin-top: 40px;
 }
 
 .features h2 {
